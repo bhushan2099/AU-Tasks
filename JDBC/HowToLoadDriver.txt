@@ -1,0 +1,99 @@
+I) First of all check if Database is active or not -
+
+Open MySql command line client and login to Database. If logged in Database is active.
+
+II) Next, load Database Driver -
+
+Following are two ways to load the Database Driver -
+
+    1) There is a class named Class in java.lang Package which has a method forName() -
+
+       import java.lang.Class
+
+       Class.forName("DriverName")  
+       --> whatever class is provided in forName method that class gets loaded in memory
+       --> it could throw an exception if mentioned class is not found hence we surround it with try-catch block
+
+       try{
+        Class.forName("com.mysql.jdbc.Driver");
+       }
+       catch(exception e){
+            System.out.println(e);
+       }
+    
+    2) Use DriverManager class - 
+       
+       DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+
+III) Create a Connection - Connection basically means the road through with data is transferred between Java Program and Database
+
+    Connection interface is present inside java.sql Package hence we import it First
+
+    import java.sql.*;
+
+    Connection con = DriverManager.getConnection("url","username","password");
+
+    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:TCP_Port_Number/DatabaseName","username,"password");
+
+    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/EmployeeDB","root","root");
+
+IV) Create and Execute Query - 
+
+    To execute query we can use Object of either Statement, PreparedStatement or CallableStatement interface -
+
+    i) Statement --> Used to execute simple query like a select query without any condition
+
+    ii) PreparedStatement --> Used to execute complex query('?' mark present in query) which include some conditions
+
+    iii) CallableStatement --> Used to fetch stored procedure or stored function from Database.
+
+    String query = "select * from EmployeeDB";   --> since it is simple query we create an object of Statement using Connection
+
+    Statement stmt = con.createStatement();
+
+    Now we have 3 methods to execute query using Statement stmt object -
+    
+    executeQuery(query) --> used when data is expected in return (when using select keyword)
+    executeUpdate(query) --> used when no data is expected in return (when using insert, update, delete, etc.)
+
+    ResultSet set = stmt.executeQuery(query) --> data gets stored in set of ResultSet.
+
+V) Process data from set -
+
+    while(set.next()){
+        int id = set.getInt("employeeName");   --> we can either mention column name or column number
+        String name = set.getString("employeeName");
+
+        System.out.println("ID - "+id+" Name - "+name);
+    }
+
+VI) Close Connection -
+
+    con.close();
+
+    - If you forget to close connection, it will lead your app to connection memory leak.
+      Suppose database server has 10 connections available and 10 clients request for the connection.
+      If the database server grants all of them, and after their usage they are not closed, the database server
+      would not be able to provide any other connection for another request. For that reason we need to close them.
+      By closing the connection, objects of Statement and ResultSet will be closed automatically.
+
+    - If connection is not closed then it might lead to some mischievous activities regarding the integrity of the database.
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+       
